@@ -18,26 +18,20 @@
 
 ## 📌 Overview
 
-Offline SMTP/MTA configuration auditor (Postfix, Exim, OpenSMTPD, Sendmail)
+
+OSmtpX is an offline, read-only SMTP/MTA configuration auditor for Postfix, Exim, OpenSMTPD and Sendmail — nothing is ever sent on the wire. It parses main.cf/master.cf, Exim ACLs, smtpd.conf and sendmail .mc/.cf files, then evaluates open-relay exposure, TLS/AUTH policy, VRFY/EXPN, and world-readable credential maps. Over 70 rules mapped to CWE and MITRE ATT&CK feed a graded report exportable as TXT, Markdown, JSON, CSV or SARIF.
 
 ---
 
 ## ✨ Features
 
-- Offline, read-only audit of mail transfer agent configuration files — nothing is sent on the wire
-- Postfix main.cf parser (continuations, $param expansion, documented defaults) + master.cf service parser with per-service "-o" override awareness
-- Exim parser — main options, macros, host/domain lists, ACL statement engine, authenticators; plus Debian update-exim4.conf.conf (dc_*) and conf.d trees
-- OpenSMTPD smtpd.conf parser — macros, tables, pki, listen directives, actions and match rules (new and legacy accept/reject syntax)
-- Sendmail .mc (m4 FEATURE/define) and .cf (O options) excerpt parser + access-map relay review
-- Open-relay engine: mynetworks / relay_from_hosts / dc_relay_nets CIDR breadth, restriction-list order, unconditional ACL accepts, "match from any for any"
-- VRFY/EXPN, STARTTLS, protocol & cipher strength, plaintext AUTH, HELO/sender policy, soft_bounce, permit_mx_backup, banner disclosure, limits
-- Credential sweep — world-readable sasl_passwd maps, sasldb2, OpenSMTPD secrets, Exim passwd.client, referenced TLS private keys, hardcoded passwords
-- 70+ rules mapped to CWE + MITRE ATT&CK with severity and concrete remediation
-- Score + grade, severity filter, CI gate (--fail-on)
-- Export TXT / Markdown / JSON / CSV / SARIF 2.1.0
-- Hardened reference snippets per MTA
-- Built-in self-test (--demo) with weak + hardened sets
-- Interactive menu and full CLI mode
+
+- Postfix main.cf/master.cf parsing with continuations, $param expansion and per-service -o overrides
+- Exim ACL engine, OpenSMTPD smtpd.conf and Sendmail .mc/.cf plus access-map relay review
+- Open-relay engine: mynetworks / relay_from_hosts CIDR breadth, restriction order, unconditional accepts
+- VRFY/EXPN, STARTTLS, cipher strength, plaintext AUTH, HELO/sender policy and banner-disclosure checks
+- Credential sweep for world-readable sasl_passwd, sasldb2, OpenSMTPD secrets and referenced TLS keys
+- 70+ CWE/ATT&CK-mapped rules, score+grade, hardened templates and TXT/MD/JSON/CSV/SARIF export
 
 ---
 
@@ -50,8 +44,13 @@ Offline SMTP/MTA configuration auditor (Postfix, Exim, OpenSMTPD, Sendmail)
 
 ## 🚀 Usage
 
+
 ```bash
-./OSmtpX
+./OSmtpX --root / --format sarif -o smtp.sarif
+./OSmtpX --main-cf /etc/postfix/main.cf --master-cf /etc/postfix/master.cf
+./OSmtpX --scan --fail-on high --min-severity medium
+./OSmtpX --demo
+./OSmtpX --help
 ```
 
 ---
